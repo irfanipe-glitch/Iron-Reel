@@ -1,6 +1,6 @@
 {
-  "name": "Iron Reel — Workout Slot Machine",
-  "short_name": "Iron Reel",
+  "name": "Workout Randomizer",
+  "short_name": "Randomizer",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

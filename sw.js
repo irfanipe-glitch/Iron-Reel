@@ -1,4 +1,4 @@
-const CACHE_NAME = "iron-reel-v2";
+const CACHE_NAME = "iron-reel-v3";
 const ASSETS = [
   "./index.html",
   "./manifest.json",

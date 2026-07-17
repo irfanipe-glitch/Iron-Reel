@@ -6,11 +6,11 @@
 <meta name="theme-color" content="#17181C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Iron Reel">
+<meta name="apple-mobile-web-app-title" content="Workout Randomizer">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<title>Iron Reel — Workout Slot Machine</title>
+<title>Workout Randomizer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -60,8 +60,8 @@ header{
 }
 h1{
   font-family:'Oswald', sans-serif;
-  font-size: 30px;
-  letter-spacing:0.02em;
+  font-size: 26px;
+  letter-spacing:0.01em;
   text-transform:uppercase;
   margin:0;
   font-weight:700;
@@ -79,17 +79,22 @@ main{ padding: 20px; flex:1; }
 }
 .segmented button{
   flex:1;
-  padding:11px 0;
+  padding:9px 0 10px;
   background:transparent;
   border:none;
   border-radius:7px;
   color:var(--steel);
   font-family:'Oswald',sans-serif;
-  font-size:14px;
-  letter-spacing:0.04em;
+  font-size:12px;
+  letter-spacing:0.03em;
   text-transform:uppercase;
   font-weight:600;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
 }
+.segmented button .tab-icon{ display:flex; align-items:center; justify-content:center; height:20px; }
 .segmented button.active{
   background: var(--amber);
   color:#1B140A;
@@ -114,15 +119,19 @@ main{ padding: 20px; flex:1; }
   border:1px solid var(--border);
   border-radius:12px;
   padding:14px 10px;
-  min-height:88px;
+  min-height:108px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   text-align:center;
-  gap:6px;
+  gap:5px;
   overflow:hidden;
+  color: var(--steel);
 }
+.reel .icon{ display:flex; align-items:center; justify-content:center; height:26px; color: inherit; }
+.reel.settled{ color: var(--amber); }
+.reel.cardio.settled{ color: var(--teal); }
 .reel::before{
   content:'';
   position:absolute; top:7px; left:7px; width:4px; height:4px; border-radius:50%;
@@ -158,6 +167,7 @@ details summary{
   align-items:center;
 }
 details summary::-webkit-details-marker{ display:none; }
+.summary-icon{ display:inline-flex; align-items:center; margin-right:8px; }
 details summary::after{
   content:'+';
   font-size:18px;
@@ -236,13 +246,13 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
 <div class="app">
   <header>
     <p class="eyebrow">Pull the lever</p>
-    <h1>Iron Reel</h1>
+    <h1>Workout Randomizer</h1>
   </header>
   <main>
     <div class="segmented">
-      <button id="legBtn">Leg</button>
-      <button id="upperBtn">Upper</button>
-      <button id="fullBtn">Full Body</button>
+      <button id="legBtn"><span class="tab-icon"></span><span>Leg</span></button>
+      <button id="upperBtn"><span class="tab-icon"></span><span>Upper</span></button>
+      <button id="fullBtn"><span class="tab-icon"></span><span>Full Body</span></button>
     </div>
 
     <p class="status" id="statusline">Choose a day, then spin.</p>
@@ -250,7 +260,7 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
     <div class="reels" id="slots"></div>
 
     <details id="customizeDetails">
-      <summary>Customize machines</summary>
+      <summary><span class="summary-icon" id="customizeIcon"></span>Customize machines</summary>
       <div id="chips" class="chips"></div>
       <div class="addrow">
         <input type="text" id="newExercise" placeholder="Machine name">
@@ -262,7 +272,7 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
     </details>
 
     <details id="cardioDetails">
-      <summary>Cardio / HIIT options</summary>
+      <summary><span class="summary-icon" id="cardioSummaryIcon"></span>Cardio / HIIT options</summary>
       <div id="cardioChips" class="chips"></div>
       <div class="addrow">
         <input type="text" id="newCardio" placeholder="Cardio option">
@@ -314,6 +324,73 @@ const days = {
 const MUSCLE_OPTIONS = ["Quads","Hamstrings","Calves","Glutes","Chest","Back","Shoulders","Rear Delts","Biceps","Triceps","Core","Forearms","Full Body"];
 const CARDIO_TARGET_OPTIONS = ["Cardio","Full Body"];
 const DAY_LABELS = { leg: 'Leg day', upper: 'Upper day', full: 'Full body day' };
+
+const MUSCLE_PARTS = {
+  "Chest": ["torso"],
+  "Back": ["torso"],
+  "Core": ["torso"],
+  "Shoulders": ["armL","armR","torso"],
+  "Rear Delts": ["armL","armR","torso"],
+  "Biceps": ["armL","armR"],
+  "Triceps": ["armL","armR"],
+  "Forearms": ["armL","armR"],
+  "Quads": ["legL","legR"],
+  "Hamstrings": ["legL","legR"],
+  "Calves": ["legL","legR"],
+  "Glutes": ["legL","legR","torso"]
+};
+
+function silhouetteIcon(emphasis, size){
+  size = size || 22;
+  const h = Math.round(size * 1.55);
+  const full = emphasis.indexOf('all') !== -1;
+  const op = (part) => (full || emphasis.indexOf(part) !== -1) ? '1' : '0.28';
+  return '<svg width="'+size+'" height="'+h+'" viewBox="0 0 40 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">'
+    + '<circle cx="20" cy="8" r="6" opacity="'+op('head')+'"/>'
+    + '<rect x="11" y="15" width="18" height="24" rx="7" opacity="'+op('torso')+'"/>'
+    + '<rect x="3" y="17" width="6" height="20" rx="3" opacity="'+op('armL')+'"/>'
+    + '<rect x="31" y="17" width="6" height="20" rx="3" opacity="'+op('armR')+'"/>'
+    + '<rect x="12" y="40" width="7" height="22" rx="3" opacity="'+op('legL')+'"/>'
+    + '<rect x="21" y="40" width="7" height="22" rx="3" opacity="'+op('legR')+'"/>'
+    + '</svg>';
+}
+
+function cardioPulseIcon(size){
+  size = size || 22;
+  const h = Math.round(size * 1.55);
+  return '<svg width="'+size+'" height="'+h+'" viewBox="0 0 40 64" xmlns="http://www.w3.org/2000/svg" fill="none">'
+    + '<path d="M4 32 L12 32 L16 18 L22 46 L27 32 L36 32" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '</svg>';
+}
+
+function pulseIconSmall(size){
+  size = size || 16;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">'
+    + '<path d="M2 12h5l2-7 4 14 3-10 2 3h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '</svg>';
+}
+
+function iconForMuscle(muscle, size){
+  if(muscle === 'Cardio') return cardioPulseIcon(size);
+  if(muscle === 'Full Body') return silhouetteIcon(['all'], size);
+  return silhouetteIcon(MUSCLE_PARTS[muscle] || [], size);
+}
+
+function placeholderIcon(size){
+  return silhouetteIcon([], size);
+}
+
+function adjustIcon(size){
+  size = size || 16;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">'
+    + '<line x1="4" y1="6" x2="20" y2="6" stroke-width="2" stroke-linecap="round"/>'
+    + '<line x1="4" y1="12" x2="20" y2="12" stroke-width="2" stroke-linecap="round"/>'
+    + '<line x1="4" y1="18" x2="20" y2="18" stroke-width="2" stroke-linecap="round"/>'
+    + '<circle cx="9" cy="6" r="2.4" fill="#17181C" stroke-width="2"/>'
+    + '<circle cx="16" cy="12" r="2.4" fill="#17181C" stroke-width="2"/>'
+    + '<circle cx="9" cy="18" r="2.4" fill="#17181C" stroke-width="2"/>'
+    + '</svg>';
+}
 let cardioPool = [
   {name:"HIIT Intervals", muscle:"Cardio"},
   {name:"Treadmill Run", muscle:"Cardio"},
@@ -414,11 +491,15 @@ function renderPlaceholders(){
   for(let i=0;i<n;i++){
     const box = document.createElement('div');
     box.className = 'reel';
+    const icon = document.createElement('div');
+    icon.className = 'icon';
+    icon.innerHTML = placeholderIcon(24);
     const name = document.createElement('div');
     name.className = 'name';
     name.textContent = '?';
     const muscle = document.createElement('div');
     muscle.className = 'muscle';
+    box.appendChild(icon);
     box.appendChild(name);
     box.appendChild(muscle);
     container.appendChild(box);
@@ -433,11 +514,15 @@ function renderSlots(n, hasCardio){
     const box = document.createElement('div');
     box.className = 'reel' + (hasCardio && i === total-1 ? ' cardio' : '');
     box.id = 'reel-' + i;
+    const icon = document.createElement('div');
+    icon.className = 'icon';
+    icon.innerHTML = placeholderIcon(24);
     const name = document.createElement('div');
     name.className = 'name';
     name.textContent = '?';
     const muscle = document.createElement('div');
     muscle.className = 'muscle';
+    box.appendChild(icon);
     box.appendChild(name);
     box.appendChild(muscle);
     container.appendChild(box);
@@ -469,6 +554,7 @@ function spin(){
   for(let i=0;i<total;i++){
     const isCardioSlot = hasCardio && i === total-1;
     const reel = document.getElementById('reel-' + i);
+    const iconEl = reel.querySelector('.icon');
     const nameEl = reel.querySelector('.name');
     const muscleEl = reel.querySelector('.muscle');
     const spinDuration = 900 + i*350;
@@ -482,6 +568,7 @@ function spin(){
       const finalItem = isCardioSlot ? cardioPick : final[i];
       nameEl.textContent = finalItem.name;
       muscleEl.textContent = finalItem.muscle;
+      iconEl.innerHTML = iconForMuscle(finalItem.muscle, 24);
       reel.classList.add('settled');
       settledCount++;
       if(settledCount === total){
@@ -549,6 +636,12 @@ function populateSelect(id, options){
 }
 populateSelect('newMuscle', MUSCLE_OPTIONS);
 populateSelect('newCardioTarget', CARDIO_TARGET_OPTIONS);
+
+document.querySelector('#legBtn .tab-icon').innerHTML = silhouetteIcon(['legL','legR'], 20);
+document.querySelector('#upperBtn .tab-icon').innerHTML = silhouetteIcon(['head','torso','armL','armR'], 20);
+document.querySelector('#fullBtn .tab-icon').innerHTML = silhouetteIcon(['all'], 20);
+document.getElementById('customizeIcon').innerHTML = adjustIcon(16);
+document.getElementById('cardioSummaryIcon').innerHTML = pulseIconSmall(16);
 
 loadState();
 document.getElementById('probSlider').value = cardioProbability;

@@ -178,7 +178,7 @@ details[open] summary::after{ content:'–'; }
   cursor:pointer; font-size:15px; padding:0;
 }
 .addrow{ display:flex; gap:6px; margin-bottom:8px; }
-.addrow input{
+.addrow input, .addrow select{
   background: var(--surface-2);
   border:1px solid var(--border);
   border-radius:8px;
@@ -240,8 +240,9 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
   </header>
   <main>
     <div class="segmented">
-      <button id="legBtn">Leg Day</button>
-      <button id="upperBtn">Upper Day</button>
+      <button id="legBtn">Leg</button>
+      <button id="upperBtn">Upper</button>
+      <button id="fullBtn">Full Body</button>
     </div>
 
     <p class="status" id="statusline">Choose a day, then spin.</p>
@@ -255,7 +256,7 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
         <input type="text" id="newExercise" placeholder="Machine name">
       </div>
       <div class="addrow">
-        <input type="text" id="newMuscle" placeholder="Muscle target">
+        <select id="newMuscle"></select>
         <button id="addBtn">Add</button>
       </div>
     </details>
@@ -267,7 +268,7 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
         <input type="text" id="newCardio" placeholder="Cardio option">
       </div>
       <div class="addrow">
-        <input type="text" id="newCardioTarget" placeholder="Target (default: Cardio)">
+        <select id="newCardioTarget"></select>
         <button id="addCardioBtn">Add</button>
       </div>
       <div class="sliderow">
@@ -300,8 +301,19 @@ const days = {
     {name:"Rear Delt Fly Machine", muscle:"Rear Delts"},
     {name:"Preacher Curl Machine", muscle:"Biceps"},
     {name:"Triceps Extension Machine", muscle:"Triceps"}
+  ],
+  full: [
+    {name:"Leg Press Machine", muscle:"Quads"},
+    {name:"Lat Pulldown Machine", muscle:"Back"},
+    {name:"Shoulder Press Machine", muscle:"Shoulders"},
+    {name:"Cable Woodchopper", muscle:"Core"},
+    {name:"Assisted Pull-Up Machine", muscle:"Back"},
+    {name:"Multi-Hip Machine", muscle:"Glutes"}
   ]
 };
+const MUSCLE_OPTIONS = ["Quads","Hamstrings","Calves","Glutes","Chest","Back","Shoulders","Rear Delts","Biceps","Triceps","Core","Forearms","Full Body"];
+const CARDIO_TARGET_OPTIONS = ["Cardio","Full Body"];
+const DAY_LABELS = { leg: 'Leg day', upper: 'Upper day', full: 'Full body day' };
 let cardioPool = [
   {name:"HIIT Intervals", muscle:"Cardio"},
   {name:"Treadmill Run", muscle:"Cardio"},
@@ -387,7 +399,8 @@ function setActiveDay(day){
   currentDay = day;
   document.getElementById('legBtn').classList.toggle('active', day === 'leg');
   document.getElementById('upperBtn').classList.toggle('active', day === 'upper');
-  document.getElementById('statusline').textContent = (day === 'leg' ? 'Leg day' : 'Upper day') + ' selected. Spin to pick.';
+  document.getElementById('fullBtn').classList.toggle('active', day === 'full');
+  document.getElementById('statusline').textContent = DAY_LABELS[day] + ' selected. Spin to pick.';
   renderChips();
   renderPlaceholders();
   saveState();
@@ -474,7 +487,7 @@ function spin(){
       if(settledCount === total){
         spinning = false;
         document.getElementById('spinBtn').removeAttribute('disabled');
-        document.getElementById('statusline').textContent = total + ' slots picked for ' + (currentDay === 'leg' ? 'leg day' : 'upper day') + (hasCardio ? ' plus a bonus cardio slot' : '') + '.';
+        document.getElementById('statusline').textContent = total + ' slots picked for ' + DAY_LABELS[currentDay].toLowerCase() + (hasCardio ? ' plus a bonus cardio slot' : '') + '.';
       }
     }, spinDuration);
   }
@@ -482,40 +495,39 @@ function spin(){
 
 document.getElementById('legBtn').addEventListener('click', ()=>setActiveDay('leg'));
 document.getElementById('upperBtn').addEventListener('click', ()=>setActiveDay('upper'));
+document.getElementById('fullBtn').addEventListener('click', ()=>setActiveDay('full'));
 document.getElementById('spinBtn').addEventListener('click', spin);
 
 document.getElementById('addBtn').addEventListener('click', ()=>{
   const nameInput = document.getElementById('newExercise');
-  const muscleInput = document.getElementById('newMuscle');
+  const muscleSelect = document.getElementById('newMuscle');
   const name = nameInput.value.trim();
-  const muscle = muscleInput.value.trim() || 'Other';
+  const muscle = muscleSelect.value;
   if(name){
     days[currentDay].push({name, muscle});
     nameInput.value = '';
-    muscleInput.value = '';
     renderChips();
     renderPlaceholders();
     saveState();
   }
 });
-document.getElementById('newMuscle').addEventListener('keydown', (e)=>{
+document.getElementById('newExercise').addEventListener('keydown', (e)=>{
   if(e.key === 'Enter'){ document.getElementById('addBtn').click(); }
 });
 
 document.getElementById('addCardioBtn').addEventListener('click', ()=>{
   const nameInput = document.getElementById('newCardio');
-  const targetInput = document.getElementById('newCardioTarget');
+  const targetSelect = document.getElementById('newCardioTarget');
   const name = nameInput.value.trim();
-  const muscle = targetInput.value.trim() || 'Cardio';
+  const muscle = targetSelect.value;
   if(name){
     cardioPool.push({name, muscle});
     nameInput.value = '';
-    targetInput.value = '';
     renderCardioChips();
     saveState();
   }
 });
-document.getElementById('newCardioTarget').addEventListener('keydown', (e)=>{
+document.getElementById('newCardio').addEventListener('keydown', (e)=>{
   if(e.key === 'Enter'){ document.getElementById('addCardioBtn').click(); }
 });
 
@@ -524,6 +536,19 @@ document.getElementById('probSlider').addEventListener('input', (e)=>{
   document.getElementById('probOut').textContent = cardioProbability + '%';
   saveState();
 });
+
+function populateSelect(id, options){
+  const select = document.getElementById(id);
+  select.innerHTML = '';
+  options.forEach(opt => {
+    const el = document.createElement('option');
+    el.value = opt;
+    el.textContent = opt;
+    select.appendChild(el);
+  });
+}
+populateSelect('newMuscle', MUSCLE_OPTIONS);
+populateSelect('newCardioTarget', CARDIO_TARGET_OPTIONS);
 
 loadState();
 document.getElementById('probSlider').value = cardioProbability;

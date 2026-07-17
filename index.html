@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17181C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Iron Reel">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<title>Iron Reel — Workout Slot Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #17181C;
+  --surface: #1F2126;
+  --surface-2: #26282E;
+  --border: #35373E;
+  --steel: #9C9FA6;
+  --white: #F2F1ED;
+  --amber: #E8A93D;
+  --amber-dim: #3A2E14;
+  --teal: #4FC1B0;
+  --teal-dim: #16302C;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+html,body{margin:0;padding:0;}
+body{
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+  display:flex;
+  justify-content:center;
+}
+.app{
+  width:100%;
+  max-width: 480px;
+  min-height: 100vh;
+  display:flex;
+  flex-direction:column;
+  padding-bottom: 104px;
+  position:relative;
+}
+header{
+  padding: 28px 20px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.eyebrow{
+  font-size:11px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color: var(--amber);
+  font-weight:600;
+  margin:0 0 4px;
+}
+h1{
+  font-family:'Oswald', sans-serif;
+  font-size: 30px;
+  letter-spacing:0.02em;
+  text-transform:uppercase;
+  margin:0;
+  font-weight:700;
+}
+main{ padding: 20px; flex:1; }
+
+.segmented{
+  display:flex;
+  background: var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:4px;
+  gap:4px;
+  margin-bottom:18px;
+}
+.segmented button{
+  flex:1;
+  padding:11px 0;
+  background:transparent;
+  border:none;
+  border-radius:7px;
+  color:var(--steel);
+  font-family:'Oswald',sans-serif;
+  font-size:14px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  font-weight:600;
+}
+.segmented button.active{
+  background: var(--amber);
+  color:#1B140A;
+}
+
+.status{
+  font-size:13px;
+  color:var(--steel);
+  margin:0 0 14px;
+  min-height:18px;
+}
+
+.reels{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:8px;
+}
+.reel{
+  position:relative;
+  background: var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 10px;
+  min-height:88px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:6px;
+  overflow:hidden;
+}
+.reel::before{
+  content:'';
+  position:absolute; top:7px; left:7px; width:4px; height:4px; border-radius:50%;
+  background: var(--border);
+}
+.reel::after{
+  content:'';
+  position:absolute; top:7px; right:7px; width:4px; height:4px; border-radius:50%;
+  background: var(--border);
+}
+.reel .name{ font-size:13px; line-height:1.3; color:var(--white); font-weight:500; }
+.reel .muscle{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--steel); opacity:0; transition:opacity .2s; }
+.reel.settled{ border-color: var(--amber); background: var(--amber-dim); }
+.reel.settled .muscle{ opacity:1; color:var(--amber); }
+.reel.cardio.settled{ border-color:var(--teal); background:var(--teal-dim); }
+.reel.cardio.settled .muscle{ color:var(--teal); }
+
+details{
+  border-top:1px solid var(--border);
+  padding:14px 0;
+}
+details summary{
+  font-family:'Oswald',sans-serif;
+  font-size:13px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--steel);
+  font-weight:600;
+  cursor:pointer;
+  list-style:none;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+details summary::-webkit-details-marker{ display:none; }
+details summary::after{
+  content:'+';
+  font-size:18px;
+  color:var(--steel);
+}
+details[open] summary::after{ content:'–'; }
+.chips{ display:flex; flex-wrap:wrap; gap:6px; margin:12px 0; }
+.chip{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12px; padding:6px 6px 6px 11px;
+  border:1px solid var(--border); border-radius:8px;
+  background:var(--surface-2); color:var(--steel);
+}
+.chip .m{ color:var(--amber); font-size:10px; text-transform:uppercase; }
+.chip button{
+  background:none;border:none;color:var(--steel);
+  width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer; font-size:15px; padding:0;
+}
+.addrow{ display:flex; gap:6px; margin-bottom:8px; }
+.addrow input{
+  background: var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--white);
+  font-size:13px;
+  padding:10px;
+  font-family:'Inter',sans-serif;
+  flex:1; min-width:0;
+}
+.addrow button{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  color:var(--white);
+  border-radius:8px;
+  padding:0 16px;
+  font-size:13px;
+  font-weight:600;
+  flex-shrink:0;
+}
+.sliderow{ display:flex; align-items:center; gap:10px; margin-top:14px; }
+.sliderow label{ font-size:12px; color:var(--steel); flex-shrink:0; }
+input[type=range]{ flex:1; accent-color: var(--amber); }
+.sliderow .out{ font-size:13px; font-weight:600; color:var(--amber); min-width:36px; text-align:right; }
+
+.spinbar{
+  position:fixed;
+  bottom:0; left:0; right:0;
+  display:flex; justify-content:center;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--bg) 65%, transparent);
+}
+.spinbar-inner{ width:100%; max-width:440px; }
+#spinBtn{
+  width:100%;
+  background: var(--amber);
+  color:#1B140A;
+  border:none;
+  border-radius:12px;
+  padding:16px;
+  font-family:'Oswald',sans-serif;
+  font-size:16px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+#spinBtn:disabled{ opacity:0.5; }
+#spinBtn:active{ transform: scale(0.98); }
+
+@media (prefers-reduced-motion: reduce){
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <p class="eyebrow">Pull the lever</p>
+    <h1>Iron Reel</h1>
+  </header>
+  <main>
+    <div class="segmented">
+      <button id="legBtn">Leg Day</button>
+      <button id="upperBtn">Upper Day</button>
+    </div>
+
+    <p class="status" id="statusline">Choose a day, then spin.</p>
+
+    <div class="reels" id="slots"></div>
+
+    <details id="customizeDetails">
+      <summary>Customize machines</summary>
+      <div id="chips" class="chips"></div>
+      <div class="addrow">
+        <input type="text" id="newExercise" placeholder="Machine name">
+      </div>
+      <div class="addrow">
+        <input type="text" id="newMuscle" placeholder="Muscle target">
+        <button id="addBtn">Add</button>
+      </div>
+    </details>
+
+    <details id="cardioDetails">
+      <summary>Cardio / HIIT options</summary>
+      <div id="cardioChips" class="chips"></div>
+      <div class="addrow">
+        <input type="text" id="newCardio" placeholder="Cardio option">
+      </div>
+      <div class="addrow">
+        <input type="text" id="newCardioTarget" placeholder="Target (default: Cardio)">
+        <button id="addCardioBtn">Add</button>
+      </div>
+      <div class="sliderow">
+        <label>Bonus cardio odds</label>
+        <input type="range" min="0" max="100" step="5" value="30" id="probSlider">
+        <span class="out" id="probOut">30%</span>
+      </div>
+    </details>
+  </main>
+
+  <div class="spinbar">
+    <div class="spinbar-inner">
+      <button id="spinBtn">Spin</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const days = {
+  leg: [
+    {name:"Leg Extension Machine", muscle:"Quads"},
+    {name:"Leg Curl Machine", muscle:"Hamstrings"},
+    {name:"Calf Raise Machine", muscle:"Calves"},
+    {name:"Glute Kickback Machine", muscle:"Glutes"}
+  ],
+  upper: [
+    {name:"Pec Deck / Chest Fly Machine", muscle:"Chest"},
+    {name:"Straight-Arm Pulldown Machine", muscle:"Back"},
+    {name:"Lateral Raise Machine", muscle:"Shoulders"},
+    {name:"Rear Delt Fly Machine", muscle:"Rear Delts"},
+    {name:"Preacher Curl Machine", muscle:"Biceps"},
+    {name:"Triceps Extension Machine", muscle:"Triceps"}
+  ]
+};
+let cardioPool = [
+  {name:"HIIT Intervals", muscle:"Cardio"},
+  {name:"Treadmill Run", muscle:"Cardio"},
+  {name:"Rowing Machine", muscle:"Cardio"},
+  {name:"Jump Rope", muscle:"Cardio"},
+  {name:"Stationary Bike", muscle:"Cardio"},
+  {name:"Elliptical", muscle:"Cardio"}
+];
+let cardioProbability = 30;
+let currentDay = 'upper';
+let spinning = false;
+
+const STORAGE_KEY = 'iron-reel-state-v1';
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const saved = JSON.parse(raw);
+    if(saved.days) Object.assign(days, saved.days);
+    if(saved.cardioPool) cardioPool = saved.cardioPool;
+    if(typeof saved.cardioProbability === 'number') cardioProbability = saved.cardioProbability;
+    if(saved.currentDay) currentDay = saved.currentDay;
+  }catch(e){
+    console.error('Could not load saved state', e);
+  }
+}
+
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ days, cardioPool, cardioProbability, currentDay }));
+  }catch(e){
+    console.error('Could not save state', e);
+  }
+}
+
+function renderChips(){
+  const container = document.getElementById('chips');
+  container.innerHTML = '';
+  days[currentDay].forEach((item, idx) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    const label = document.createElement('span');
+    label.innerHTML = item.name + ' <span class="m">· ' + item.muscle + '</span>';
+    const btn = document.createElement('button');
+    btn.setAttribute('aria-label', 'Remove ' + item.name);
+    btn.textContent = '×';
+    btn.addEventListener('click', () => {
+      days[currentDay].splice(idx, 1);
+      renderChips();
+      renderPlaceholders();
+      saveState();
+    });
+    chip.appendChild(label);
+    chip.appendChild(btn);
+    container.appendChild(chip);
+  });
+}
+
+function renderCardioChips(){
+  const container = document.getElementById('cardioChips');
+  container.innerHTML = '';
+  cardioPool.forEach((item, idx) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    const label = document.createElement('span');
+    label.innerHTML = item.name + ' <span class="m">· ' + item.muscle + '</span>';
+    const btn = document.createElement('button');
+    btn.setAttribute('aria-label', 'Remove ' + item.name);
+    btn.textContent = '×';
+    btn.addEventListener('click', () => {
+      cardioPool.splice(idx, 1);
+      renderCardioChips();
+      saveState();
+    });
+    chip.appendChild(label);
+    chip.appendChild(btn);
+    container.appendChild(chip);
+  });
+}
+
+function setActiveDay(day){
+  currentDay = day;
+  document.getElementById('legBtn').classList.toggle('active', day === 'leg');
+  document.getElementById('upperBtn').classList.toggle('active', day === 'upper');
+  document.getElementById('statusline').textContent = (day === 'leg' ? 'Leg day' : 'Upper day') + ' selected. Spin to pick.';
+  renderChips();
+  renderPlaceholders();
+  saveState();
+}
+
+function renderPlaceholders(){
+  const pool = days[currentDay];
+  const n = Math.min(pool.length, 5) || 1;
+  const container = document.getElementById('slots');
+  container.innerHTML = '';
+  for(let i=0;i<n;i++){
+    const box = document.createElement('div');
+    box.className = 'reel';
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = '?';
+    const muscle = document.createElement('div');
+    muscle.className = 'muscle';
+    box.appendChild(name);
+    box.appendChild(muscle);
+    container.appendChild(box);
+  }
+}
+
+function renderSlots(n, hasCardio){
+  const container = document.getElementById('slots');
+  container.innerHTML = '';
+  const total = n + (hasCardio ? 1 : 0);
+  for(let i=0;i<total;i++){
+    const box = document.createElement('div');
+    box.className = 'reel' + (hasCardio && i === total-1 ? ' cardio' : '');
+    box.id = 'reel-' + i;
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = '?';
+    const muscle = document.createElement('div');
+    muscle.className = 'muscle';
+    box.appendChild(name);
+    box.appendChild(muscle);
+    container.appendChild(box);
+  }
+}
+
+function spin(){
+  if(spinning) return;
+  const pool = days[currentDay];
+  if(pool.length === 0){
+    document.getElementById('statusline').textContent = 'Add at least one machine first.';
+    return;
+  }
+  spinning = true;
+  document.getElementById('spinBtn').setAttribute('disabled','');
+  document.getElementById('statusline').textContent = 'Spinning...';
+
+  const options = [4,5].filter(x => x <= pool.length);
+  const n = options.length ? options[Math.floor(Math.random()*options.length)] : pool.length;
+  const final = pool.slice().sort(()=>Math.random()-0.5).slice(0,n);
+
+  const hasCardio = cardioPool.length > 0 && (Math.random()*100 < cardioProbability);
+  const cardioPick = hasCardio ? cardioPool[Math.floor(Math.random()*cardioPool.length)] : null;
+  const total = n + (hasCardio ? 1 : 0);
+
+  renderSlots(n, hasCardio);
+
+  let settledCount = 0;
+  for(let i=0;i<total;i++){
+    const isCardioSlot = hasCardio && i === total-1;
+    const reel = document.getElementById('reel-' + i);
+    const nameEl = reel.querySelector('.name');
+    const muscleEl = reel.querySelector('.muscle');
+    const spinDuration = 900 + i*350;
+    const tickRate = 55;
+    const sourcePool = isCardioSlot ? cardioPool : pool;
+    const interval = setInterval(()=>{
+      nameEl.textContent = sourcePool[Math.floor(Math.random()*sourcePool.length)].name;
+    }, tickRate);
+    setTimeout(()=>{
+      clearInterval(interval);
+      const finalItem = isCardioSlot ? cardioPick : final[i];
+      nameEl.textContent = finalItem.name;
+      muscleEl.textContent = finalItem.muscle;
+      reel.classList.add('settled');
+      settledCount++;
+      if(settledCount === total){
+        spinning = false;
+        document.getElementById('spinBtn').removeAttribute('disabled');
+        document.getElementById('statusline').textContent = total + ' slots picked for ' + (currentDay === 'leg' ? 'leg day' : 'upper day') + (hasCardio ? ' plus a bonus cardio slot' : '') + '.';
+      }
+    }, spinDuration);
+  }
+}
+
+document.getElementById('legBtn').addEventListener('click', ()=>setActiveDay('leg'));
+document.getElementById('upperBtn').addEventListener('click', ()=>setActiveDay('upper'));
+document.getElementById('spinBtn').addEventListener('click', spin);
+
+document.getElementById('addBtn').addEventListener('click', ()=>{
+  const nameInput = document.getElementById('newExercise');
+  const muscleInput = document.getElementById('newMuscle');
+  const name = nameInput.value.trim();
+  const muscle = muscleInput.value.trim() || 'Other';
+  if(name){
+    days[currentDay].push({name, muscle});
+    nameInput.value = '';
+    muscleInput.value = '';
+    renderChips();
+    renderPlaceholders();
+    saveState();
+  }
+});
+document.getElementById('newMuscle').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){ document.getElementById('addBtn').click(); }
+});
+
+document.getElementById('addCardioBtn').addEventListener('click', ()=>{
+  const nameInput = document.getElementById('newCardio');
+  const targetInput = document.getElementById('newCardioTarget');
+  const name = nameInput.value.trim();
+  const muscle = targetInput.value.trim() || 'Cardio';
+  if(name){
+    cardioPool.push({name, muscle});
+    nameInput.value = '';
+    targetInput.value = '';
+    renderCardioChips();
+    saveState();
+  }
+});
+document.getElementById('newCardioTarget').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){ document.getElementById('addCardioBtn').click(); }
+});
+
+document.getElementById('probSlider').addEventListener('input', (e)=>{
+  cardioProbability = Number(e.target.value);
+  document.getElementById('probOut').textContent = cardioProbability + '%';
+  saveState();
+});
+
+loadState();
+document.getElementById('probSlider').value = cardioProbability;
+document.getElementById('probOut').textContent = cardioProbability + '%';
+setActiveDay(currentDay);
+renderCardioChips();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((e) => console.error('SW registration failed', e));
+  });
+}
+</script>
+</body>
+</html>

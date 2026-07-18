@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#17181C">
+<meta name="theme-color" content="#0C0708">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Workout Randomizer">
@@ -16,16 +16,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg: #17181C;
-  --surface: #1F2126;
-  --surface-2: #26282E;
-  --border: #35373E;
-  --steel: #9C9FA6;
-  --white: #F2F1ED;
-  --amber: #E8A93D;
-  --amber-dim: #3A2E14;
-  --teal: #4FC1B0;
-  --teal-dim: #16302C;
+  --bg: #0C0708;
+  --surface: #1A0F10;
+  --surface-2: #241416;
+  --border: #3D2022;
+  --muted: #A8888A;
+  --white: #F5EDEE;
+  --accent: #C81E2C;
+  --accent-dim: #3B1013;
+  --accent-2: #E8543F;
+  --accent-2-dim: #3A1712;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
 html,body{margin:0;padding:0;}
@@ -50,11 +50,16 @@ header{
   padding: 28px 20px 18px;
   border-bottom: 1px solid var(--border);
 }
+.header-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.gender-toggle{ display:flex; gap:4px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:4px; flex-shrink:0; }
+.g-btn{ width:34px; height:34px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; border-radius:7px; color:var(--muted); }
+.g-btn.active{ background: var(--accent); color:#170A0B; }
+.g-btn .g-icon{ display:flex; align-items:center; justify-content:center; height:20px; }
 .eyebrow{
   font-size:11px;
   letter-spacing:0.14em;
   text-transform:uppercase;
-  color: var(--amber);
+  color: var(--accent);
   font-weight:600;
   margin:0 0 4px;
 }
@@ -83,7 +88,7 @@ main{ padding: 20px; flex:1; }
   background:transparent;
   border:none;
   border-radius:7px;
-  color:var(--steel);
+  color:var(--muted);
   font-family:'Oswald',sans-serif;
   font-size:12px;
   letter-spacing:0.03em;
@@ -96,13 +101,13 @@ main{ padding: 20px; flex:1; }
 }
 .segmented button .tab-icon{ display:flex; align-items:center; justify-content:center; height:20px; }
 .segmented button.active{
-  background: var(--amber);
-  color:#1B140A;
+  background: var(--accent);
+  color:#170A0B;
 }
 
 .status{
   font-size:13px;
-  color:var(--steel);
+  color:var(--muted);
   margin:0 0 14px;
   min-height:18px;
 }
@@ -127,11 +132,11 @@ main{ padding: 20px; flex:1; }
   text-align:center;
   gap:5px;
   overflow:hidden;
-  color: var(--steel);
+  color: var(--muted);
 }
 .reel .icon{ display:flex; align-items:center; justify-content:center; height:26px; color: inherit; }
-.reel.settled{ color: var(--amber); }
-.reel.cardio.settled{ color: var(--teal); }
+.reel.settled{ color: var(--accent); }
+.reel.cardio.settled{ color: var(--accent-2); }
 .reel::before{
   content:'';
   position:absolute; top:7px; left:7px; width:4px; height:4px; border-radius:50%;
@@ -143,11 +148,11 @@ main{ padding: 20px; flex:1; }
   background: var(--border);
 }
 .reel .name{ font-size:13px; line-height:1.3; color:var(--white); font-weight:500; }
-.reel .muscle{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--steel); opacity:0; transition:opacity .2s; }
-.reel.settled{ border-color: var(--amber); background: var(--amber-dim); }
-.reel.settled .muscle{ opacity:1; color:var(--amber); }
-.reel.cardio.settled{ border-color:var(--teal); background:var(--teal-dim); }
-.reel.cardio.settled .muscle{ color:var(--teal); }
+.reel .muscle{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); opacity:0; transition:opacity .2s; }
+.reel.settled{ border-color: var(--accent); background: var(--accent-dim); }
+.reel.settled .muscle{ opacity:1; color:var(--accent); }
+.reel.cardio.settled{ border-color:var(--accent-2); background:var(--accent-2-dim); }
+.reel.cardio.settled .muscle{ color:var(--accent-2); }
 
 details{
   border-top:1px solid var(--border);
@@ -158,7 +163,7 @@ details summary{
   font-size:13px;
   letter-spacing:0.05em;
   text-transform:uppercase;
-  color:var(--steel);
+  color:var(--muted);
   font-weight:600;
   cursor:pointer;
   list-style:none;
@@ -171,7 +176,7 @@ details summary::-webkit-details-marker{ display:none; }
 details summary::after{
   content:'+';
   font-size:18px;
-  color:var(--steel);
+  color:var(--muted);
 }
 details[open] summary::after{ content:'–'; }
 .chips{ display:flex; flex-wrap:wrap; gap:6px; margin:12px 0; }
@@ -179,11 +184,11 @@ details[open] summary::after{ content:'–'; }
   display:inline-flex; align-items:center; gap:6px;
   font-size:12px; padding:6px 6px 6px 11px;
   border:1px solid var(--border); border-radius:8px;
-  background:var(--surface-2); color:var(--steel);
+  background:var(--surface-2); color:var(--muted);
 }
-.chip .m{ color:var(--amber); font-size:10px; text-transform:uppercase; }
+.chip .m{ color:var(--accent); font-size:10px; text-transform:uppercase; }
 .chip button{
-  background:none;border:none;color:var(--steel);
+  background:none;border:none;color:var(--muted);
   width:20px;height:20px;display:flex;align-items:center;justify-content:center;
   cursor:pointer; font-size:15px; padding:0;
 }
@@ -209,9 +214,24 @@ details[open] summary::after{ content:'–'; }
   flex-shrink:0;
 }
 .sliderow{ display:flex; align-items:center; gap:10px; margin-top:14px; }
-.sliderow label{ font-size:12px; color:var(--steel); flex-shrink:0; }
-input[type=range]{ flex:1; accent-color: var(--amber); }
-.sliderow .out{ font-size:13px; font-weight:600; color:var(--amber); min-width:36px; text-align:right; }
+.sliderow label{ font-size:12px; color:var(--muted); flex-shrink:0; }
+input[type=range]{ flex:1; accent-color: var(--accent); }
+.sliderow .out{ font-size:13px; font-weight:600; color:var(--accent); min-width:36px; text-align:right; }
+
+.anything-section{ border-top:1px solid var(--border); padding-top:20px; margin-top:4px; text-align:center; }
+.anything-header{ display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:16px; }
+.anything-title{ font-family:'Oswald',sans-serif; font-size:15px; text-transform:uppercase; letter-spacing:0.04em; color: var(--white); }
+.anything-sub{ font-size:12px; color:var(--muted); margin-top:2px; }
+.wheel-wrap{ position:relative; width:200px; height:200px; margin:0 auto 16px; }
+.wheel{ width:100%; height:100%; border-radius:50%; border:4px solid var(--accent); box-sizing:border-box; background: var(--surface-2); }
+.wheel-pointer{ position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-bottom:16px solid var(--accent); z-index:2; }
+.wheel-hub{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:16px; height:16px; border-radius:50%; background:var(--bg); border:2px solid var(--accent); z-index:2; }
+.secondary-btn{ background:var(--surface-2); border:1px solid var(--border); color:var(--white); border-radius:10px; padding:12px 22px; font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:0.04em; text-transform:uppercase; font-weight:600; }
+.secondary-btn:disabled{ opacity:0.5; }
+.anything-result{ margin-top:14px; min-height:20px; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.anything-result .icon{ height:26px; display:flex; align-items:center; justify-content:center; color: var(--accent); }
+.anything-result .name{ font-size:14px; font-weight:600; color: var(--white); }
+.anything-result .muscle{ font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); }
 
 .spinbar{
   position:fixed;
@@ -223,8 +243,8 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
 .spinbar-inner{ width:100%; max-width:440px; }
 #spinBtn{
   width:100%;
-  background: var(--amber);
-  color:#1B140A;
+  background: var(--accent);
+  color:#170A0B;
   border:none;
   border-radius:12px;
   padding:16px;
@@ -245,8 +265,16 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
 <body>
 <div class="app">
   <header>
-    <p class="eyebrow">Pull the lever</p>
-    <h1>Workout Randomizer</h1>
+    <div class="header-row">
+      <div>
+        <p class="eyebrow">Pull the lever</p>
+        <h1>Workout Randomizer</h1>
+      </div>
+      <div class="gender-toggle" id="genderToggle">
+        <button data-g="male" class="g-btn" aria-label="Male figure"><span class="g-icon"></span></button>
+        <button data-g="female" class="g-btn" aria-label="Female figure"><span class="g-icon"></span></button>
+      </div>
+    </div>
   </header>
   <main>
     <div class="segmented">
@@ -260,10 +288,10 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
     <div class="reels" id="slots"></div>
 
     <details id="customizeDetails">
-      <summary><span class="summary-icon" id="customizeIcon"></span>Customize machines</summary>
+      <summary><span class="summary-icon" id="customizeIcon"></span>Customize workouts</summary>
       <div id="chips" class="chips"></div>
       <div class="addrow">
-        <input type="text" id="newExercise" placeholder="Machine name">
+        <input type="text" id="newExercise" placeholder="Workout name">
       </div>
       <div class="addrow">
         <select id="newMuscle"></select>
@@ -287,6 +315,23 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
         <span class="out" id="probOut">30%</span>
       </div>
     </details>
+
+    <div class="anything-section">
+      <div class="anything-header">
+        <span class="summary-icon" id="anythingIcon"></span>
+        <div>
+          <div class="anything-title">Anything Goes</div>
+          <div class="anything-sub">One random pick from every list</div>
+        </div>
+      </div>
+      <div class="wheel-wrap">
+        <div class="wheel-pointer"></div>
+        <div class="wheel" id="wheel"></div>
+        <div class="wheel-hub"></div>
+      </div>
+      <button id="anythingSpinBtn" class="secondary-btn">Spin the Wheel</button>
+      <div id="anythingResult" class="anything-result"></div>
+    </div>
   </main>
 
   <div class="spinbar">
@@ -299,26 +344,27 @@ input[type=range]{ flex:1; accent-color: var(--amber); }
 <script>
 const days = {
   leg: [
-    {name:"Leg Extension Machine", muscle:"Quads"},
-    {name:"Leg Curl Machine", muscle:"Hamstrings"},
-    {name:"Calf Raise Machine", muscle:"Calves"},
-    {name:"Glute Kickback Machine", muscle:"Glutes"}
+    {name:"Bulgarian Split Squat", muscle:"Quads"},
+    {name:"Romanian Deadlift", muscle:"Hamstrings"},
+    {name:"Standing Calf Raise", muscle:"Calves"},
+    {name:"Hip Thrust", muscle:"Glutes"},
+    {name:"Walking Lunges", muscle:"Quads"}
   ],
   upper: [
-    {name:"Pec Deck / Chest Fly Machine", muscle:"Chest"},
-    {name:"Straight-Arm Pulldown Machine", muscle:"Back"},
-    {name:"Lateral Raise Machine", muscle:"Shoulders"},
-    {name:"Rear Delt Fly Machine", muscle:"Rear Delts"},
-    {name:"Preacher Curl Machine", muscle:"Biceps"},
-    {name:"Triceps Extension Machine", muscle:"Triceps"}
+    {name:"Push-Ups", muscle:"Chest"},
+    {name:"Pull-Ups", muscle:"Back"},
+    {name:"Lateral Raises", muscle:"Shoulders"},
+    {name:"Face Pulls", muscle:"Rear Delts"},
+    {name:"Barbell Curl", muscle:"Biceps"},
+    {name:"Overhead Triceps Extension", muscle:"Triceps"}
   ],
   full: [
-    {name:"Leg Press Machine", muscle:"Quads"},
-    {name:"Lat Pulldown Machine", muscle:"Back"},
-    {name:"Shoulder Press Machine", muscle:"Shoulders"},
-    {name:"Cable Woodchopper", muscle:"Core"},
-    {name:"Assisted Pull-Up Machine", muscle:"Back"},
-    {name:"Multi-Hip Machine", muscle:"Glutes"}
+    {name:"Burpees", muscle:"Full Body"},
+    {name:"Kettlebell Swings", muscle:"Glutes"},
+    {name:"Thrusters", muscle:"Full Body"},
+    {name:"Mountain Climbers", muscle:"Core"},
+    {name:"Renegade Rows", muscle:"Back"},
+    {name:"Farmer's Carry", muscle:"Forearms"}
   ]
 };
 const MUSCLE_OPTIONS = ["Quads","Hamstrings","Calves","Glutes","Chest","Back","Shoulders","Rear Delts","Biceps","Triceps","Core","Forearms","Full Body"];
@@ -340,19 +386,71 @@ const MUSCLE_PARTS = {
   "Glutes": ["legL","legR","torso"]
 };
 
-function silhouetteIcon(emphasis, size){
+function maleSilhouette(emphasis, size){
   size = size || 22;
-  const h = Math.round(size * 1.55);
+  const h = Math.round(size * 1.6);
   const full = emphasis.indexOf('all') !== -1;
   const op = (part) => (full || emphasis.indexOf(part) !== -1) ? '1' : '0.28';
+  const t = 'stroke="rgba(0,0,0,0.35)" fill="none" stroke-width="1"';
   return '<svg width="'+size+'" height="'+h+'" viewBox="0 0 40 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">'
-    + '<circle cx="20" cy="8" r="6" opacity="'+op('head')+'"/>'
-    + '<rect x="11" y="15" width="18" height="24" rx="7" opacity="'+op('torso')+'"/>'
-    + '<rect x="3" y="17" width="6" height="20" rx="3" opacity="'+op('armL')+'"/>'
-    + '<rect x="31" y="17" width="6" height="20" rx="3" opacity="'+op('armR')+'"/>'
-    + '<rect x="12" y="40" width="7" height="22" rx="3" opacity="'+op('legL')+'"/>'
-    + '<rect x="21" y="40" width="7" height="22" rx="3" opacity="'+op('legR')+'"/>'
+    + '<circle cx="20" cy="7" r="5.5" opacity="'+op('head')+'"/>'
+    + '<rect x="17.5" y="10.5" width="5" height="3.5" opacity="'+op('head')+'"/>'
+    + '<rect x="8" y="14" width="24" height="4" rx="2" opacity="'+op('torso')+'"/>'
+    + '<rect x="11" y="17" width="18" height="9" rx="3" opacity="'+op('torso')+'"/>'
+    + '<rect x="13" y="25" width="14" height="9" rx="3" opacity="'+op('torso')+'"/>'
+    + '<rect x="12" y="33" width="16" height="5" rx="2" opacity="'+op('torso')+'"/>'
+    + '<line x1="20" y1="17" x2="20" y2="25" '+t+'/>'
+    + '<ellipse cx="15.5" cy="20.5" rx="3" ry="3" '+t+'/>'
+    + '<ellipse cx="24.5" cy="20.5" rx="3" ry="3" '+t+'/>'
+    + '<line x1="15" y1="27" x2="25" y2="27" '+t+'/>'
+    + '<line x1="15" y1="30" x2="25" y2="30" '+t+'/>'
+    + '<line x1="15" y1="33" x2="25" y2="33" '+t+'/>'
+    + '<rect x="3" y="16" width="7" height="11" rx="3" opacity="'+op('armL')+'"/>'
+    + '<rect x="4" y="27" width="5" height="11" rx="2.5" opacity="'+op('armL')+'"/>'
+    + '<rect x="30" y="16" width="7" height="11" rx="3" opacity="'+op('armR')+'"/>'
+    + '<rect x="31" y="27" width="5" height="11" rx="2.5" opacity="'+op('armR')+'"/>'
+    + '<rect x="12" y="38" width="8" height="13" rx="3" opacity="'+op('legL')+'"/>'
+    + '<rect x="13" y="51" width="6" height="13" rx="2.5" opacity="'+op('legL')+'"/>'
+    + '<rect x="20" y="38" width="8" height="13" rx="3" opacity="'+op('legR')+'"/>'
+    + '<rect x="21" y="51" width="6" height="13" rx="2.5" opacity="'+op('legR')+'"/>'
+    + '<line x1="16" y1="40" x2="16" y2="49" '+t+'/>'
+    + '<line x1="24" y1="40" x2="24" y2="49" '+t+'/>'
     + '</svg>';
+}
+
+function femaleSilhouette(emphasis, size){
+  size = size || 22;
+  const h = Math.round(size * 1.6);
+  const full = emphasis.indexOf('all') !== -1;
+  const op = (part) => (full || emphasis.indexOf(part) !== -1) ? '1' : '0.28';
+  const t = 'stroke="rgba(0,0,0,0.35)" fill="none" stroke-width="1"';
+  return '<svg width="'+size+'" height="'+h+'" viewBox="0 0 40 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">'
+    + '<ellipse cx="25.5" cy="9" rx="2.6" ry="4.5" opacity="'+op('head')+'"/>'
+    + '<circle cx="20" cy="7" r="5.2" opacity="'+op('head')+'"/>'
+    + '<rect x="17.7" y="10.2" width="4.6" height="3.3" opacity="'+op('head')+'"/>'
+    + '<rect x="9" y="14" width="22" height="3.4" rx="1.7" opacity="'+op('torso')+'"/>'
+    + '<rect x="12" y="17.4" width="16" height="7.6" rx="3" opacity="'+op('torso')+'"/>'
+    + '<rect x="14.5" y="24.5" width="11" height="7" rx="3.5" opacity="'+op('torso')+'"/>'
+    + '<rect x="11.5" y="31" width="17" height="6" rx="3" opacity="'+op('torso')+'"/>'
+    + '<ellipse cx="16" cy="20.2" rx="2.4" ry="2.4" '+t+'/>'
+    + '<ellipse cx="24" cy="20.2" rx="2.4" ry="2.4" '+t+'/>'
+    + '<line x1="16.5" y1="27" x2="23.5" y2="27" '+t+'/>'
+    + '<line x1="16.5" y1="29.5" x2="23.5" y2="29.5" '+t+'/>'
+    + '<rect x="4.5" y="16" width="5.5" height="10" rx="2.75" opacity="'+op('armL')+'"/>'
+    + '<rect x="5" y="26" width="4" height="11" rx="2" opacity="'+op('armL')+'"/>'
+    + '<rect x="30" y="16" width="5.5" height="10" rx="2.75" opacity="'+op('armR')+'"/>'
+    + '<rect x="31" y="26" width="4" height="11" rx="2" opacity="'+op('armR')+'"/>'
+    + '<rect x="13" y="37" width="7" height="14" rx="3" opacity="'+op('legL')+'"/>'
+    + '<rect x="14" y="51" width="5" height="13" rx="2.5" opacity="'+op('legL')+'"/>'
+    + '<rect x="20" y="37" width="7" height="14" rx="3" opacity="'+op('legR')+'"/>'
+    + '<rect x="21" y="51" width="5" height="13" rx="2.5" opacity="'+op('legR')+'"/>'
+    + '<line x1="16.5" y1="39" x2="16.5" y2="50" '+t+'/>'
+    + '<line x1="23.5" y1="39" x2="23.5" y2="50" '+t+'/>'
+    + '</svg>';
+}
+
+function getSilhouette(emphasis, size){
+  return currentGender === 'female' ? femaleSilhouette(emphasis, size) : maleSilhouette(emphasis, size);
 }
 
 function cardioPulseIcon(size){
@@ -371,13 +469,26 @@ function pulseIconSmall(size){
 }
 
 function iconForMuscle(muscle, size){
+  if(!muscle) return getSilhouette([], size);
   if(muscle === 'Cardio') return cardioPulseIcon(size);
-  if(muscle === 'Full Body') return silhouetteIcon(['all'], size);
-  return silhouetteIcon(MUSCLE_PARTS[muscle] || [], size);
+  if(muscle === 'Full Body') return getSilhouette(['all'], size);
+  return getSilhouette(MUSCLE_PARTS[muscle] || [], size);
 }
 
 function placeholderIcon(size){
-  return silhouetteIcon([], size);
+  return getSilhouette([], size);
+}
+
+function diceIcon(size){
+  size = size || 16;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">'
+    + '<rect x="3" y="3" width="18" height="18" rx="4" stroke-width="2"/>'
+    + '<circle cx="8" cy="8" r="1.6" fill="currentColor" stroke="none"/>'
+    + '<circle cx="16" cy="8" r="1.6" fill="currentColor" stroke="none"/>'
+    + '<circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>'
+    + '<circle cx="8" cy="16" r="1.6" fill="currentColor" stroke="none"/>'
+    + '<circle cx="16" cy="16" r="1.6" fill="currentColor" stroke="none"/>'
+    + '</svg>';
 }
 
 function adjustIcon(size){
@@ -386,24 +497,28 @@ function adjustIcon(size){
     + '<line x1="4" y1="6" x2="20" y2="6" stroke-width="2" stroke-linecap="round"/>'
     + '<line x1="4" y1="12" x2="20" y2="12" stroke-width="2" stroke-linecap="round"/>'
     + '<line x1="4" y1="18" x2="20" y2="18" stroke-width="2" stroke-linecap="round"/>'
-    + '<circle cx="9" cy="6" r="2.4" fill="#17181C" stroke-width="2"/>'
-    + '<circle cx="16" cy="12" r="2.4" fill="#17181C" stroke-width="2"/>'
-    + '<circle cx="9" cy="18" r="2.4" fill="#17181C" stroke-width="2"/>'
+    + '<circle cx="9" cy="6" r="2.4" fill="#0C0708" stroke-width="2"/>'
+    + '<circle cx="16" cy="12" r="2.4" fill="#0C0708" stroke-width="2"/>'
+    + '<circle cx="9" cy="18" r="2.4" fill="#0C0708" stroke-width="2"/>'
     + '</svg>';
 }
 let cardioPool = [
   {name:"HIIT Intervals", muscle:"Cardio"},
   {name:"Treadmill Run", muscle:"Cardio"},
-  {name:"Rowing Machine", muscle:"Cardio"},
+  {name:"Rowing", muscle:"Cardio"},
   {name:"Jump Rope", muscle:"Cardio"},
-  {name:"Stationary Bike", muscle:"Cardio"},
+  {name:"Cycling", muscle:"Cardio"},
   {name:"Elliptical", muscle:"Cardio"}
 ];
 let cardioProbability = 30;
 let currentDay = 'upper';
+let currentGender = 'male';
 let spinning = false;
+let wheelRotation = 0;
+let wheelSpinning = false;
+let lastAnythingItem = null;
 
-const STORAGE_KEY = 'iron-reel-state-v1';
+const STORAGE_KEY = 'workout-randomizer-state-v2';
 
 function loadState(){
   try{
@@ -414,6 +529,7 @@ function loadState(){
     if(saved.cardioPool) cardioPool = saved.cardioPool;
     if(typeof saved.cardioProbability === 'number') cardioProbability = saved.cardioProbability;
     if(saved.currentDay) currentDay = saved.currentDay;
+    if(saved.currentGender) currentGender = saved.currentGender;
   }catch(e){
     console.error('Could not load saved state', e);
   }
@@ -421,7 +537,7 @@ function loadState(){
 
 function saveState(){
   try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ days, cardioPool, cardioProbability, currentDay }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ days, cardioPool, cardioProbability, currentDay, currentGender }));
   }catch(e){
     console.error('Could not save state', e);
   }
@@ -472,6 +588,34 @@ function renderCardioChips(){
   });
 }
 
+function setGender(g){
+  currentGender = g;
+  document.querySelectorAll('.g-btn').forEach(b => b.classList.toggle('active', b.dataset.g === g));
+  refreshAllIcons();
+  saveState();
+}
+
+function refreshAllIcons(){
+  document.querySelector('#legBtn .tab-icon').innerHTML = getSilhouette(['legL','legR'], 20);
+  document.querySelector('#upperBtn .tab-icon').innerHTML = getSilhouette(['head','torso','armL','armR'], 20);
+  document.querySelector('#fullBtn .tab-icon').innerHTML = getSilhouette(['all'], 20);
+  document.querySelectorAll('.reel').forEach(reel => {
+    const iconEl = reel.querySelector('.icon');
+    if(iconEl) iconEl.innerHTML = iconForMuscle(reel.dataset.muscle || '', 24);
+  });
+  if(lastAnythingItem){
+    const iconEl = document.querySelector('#anythingResult .icon');
+    if(iconEl) iconEl.innerHTML = iconForMuscle(lastAnythingItem.muscle, 26);
+  }
+}
+
+document.querySelectorAll('.g-btn').forEach(btn => {
+  btn.addEventListener('click', () => setGender(btn.dataset.g));
+});
+
+document.querySelector('#genderToggle [data-g="male"] .g-icon').innerHTML = maleSilhouette(['all'], 18);
+document.querySelector('#genderToggle [data-g="female"] .g-icon').innerHTML = femaleSilhouette(['all'], 18);
+
 function setActiveDay(day){
   currentDay = day;
   document.getElementById('legBtn').classList.toggle('active', day === 'leg');
@@ -491,6 +635,7 @@ function renderPlaceholders(){
   for(let i=0;i<n;i++){
     const box = document.createElement('div');
     box.className = 'reel';
+    box.dataset.muscle = '';
     const icon = document.createElement('div');
     icon.className = 'icon';
     icon.innerHTML = placeholderIcon(24);
@@ -514,6 +659,7 @@ function renderSlots(n, hasCardio){
     const box = document.createElement('div');
     box.className = 'reel' + (hasCardio && i === total-1 ? ' cardio' : '');
     box.id = 'reel-' + i;
+    box.dataset.muscle = '';
     const icon = document.createElement('div');
     icon.className = 'icon';
     icon.innerHTML = placeholderIcon(24);
@@ -533,7 +679,7 @@ function spin(){
   if(spinning) return;
   const pool = days[currentDay];
   if(pool.length === 0){
-    document.getElementById('statusline').textContent = 'Add at least one machine first.';
+    document.getElementById('statusline').textContent = 'Add at least one workout first.';
     return;
   }
   spinning = true;
@@ -568,6 +714,7 @@ function spin(){
       const finalItem = isCardioSlot ? cardioPick : final[i];
       nameEl.textContent = finalItem.name;
       muscleEl.textContent = finalItem.muscle;
+      reel.dataset.muscle = finalItem.muscle;
       iconEl.innerHTML = iconForMuscle(finalItem.muscle, 24);
       reel.classList.add('settled');
       settledCount++;
@@ -579,6 +726,72 @@ function spin(){
     }, spinDuration);
   }
 }
+
+function buildWheelGradient(n){
+  const colors = ['var(--accent)', 'var(--surface-2)'];
+  const step = 360 / n;
+  const stops = [];
+  for(let i=0;i<n;i++){
+    stops.push(colors[i % 2] + ' ' + (i*step) + 'deg ' + ((i+1)*step) + 'deg');
+  }
+  return 'conic-gradient(from 0deg, ' + stops.join(', ') + ')';
+}
+
+function spinAnything(){
+  if(wheelSpinning) return;
+  const allItems = [
+    ...days.leg.map(x => ({...x, source:'Leg day'})),
+    ...days.upper.map(x => ({...x, source:'Upper day'})),
+    ...days.full.map(x => ({...x, source:'Full body day'})),
+    ...cardioPool.map(x => ({...x, source:'Cardio'}))
+  ];
+  const resultEl = document.getElementById('anythingResult');
+  if(allItems.length === 0){
+    resultEl.innerHTML = '<div class="name">Add some workouts first.</div>';
+    return;
+  }
+  wheelSpinning = true;
+  document.getElementById('anythingSpinBtn').setAttribute('disabled','');
+  resultEl.innerHTML = '';
+
+  const n = allItems.length;
+  const wheelEl = document.getElementById('wheel');
+  wheelEl.style.background = buildWheelGradient(n);
+
+  const idx = Math.floor(Math.random() * n);
+  const step = 360 / n;
+  const spins = 5 + Math.floor(Math.random() * 3);
+  const targetWithinTurn = 360 - (idx * step + step / 2);
+  const currentMod = wheelRotation % 360;
+  const delta = (((targetWithinTurn - currentMod) % 360) + 360) % 360;
+  const newRotation = wheelRotation + spins * 360 + delta;
+
+  wheelEl.style.transition = 'transform 3.4s cubic-bezier(0.12,0.67,0.1,1)';
+  wheelEl.style.transform = 'rotate(' + newRotation + 'deg)';
+  wheelRotation = newRotation;
+
+  setTimeout(() => {
+    const item = allItems[idx];
+    lastAnythingItem = item;
+    const icon = document.createElement('div');
+    icon.className = 'icon';
+    icon.innerHTML = iconForMuscle(item.muscle, 26);
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = item.name;
+    const muscle = document.createElement('div');
+    muscle.className = 'muscle';
+    muscle.textContent = item.muscle + ' · ' + item.source;
+    resultEl.appendChild(icon);
+    resultEl.appendChild(name);
+    resultEl.appendChild(muscle);
+    wheelSpinning = false;
+    document.getElementById('anythingSpinBtn').removeAttribute('disabled');
+  }, 3500);
+}
+
+document.getElementById('anythingSpinBtn').addEventListener('click', spinAnything);
+document.getElementById('anythingIcon').innerHTML = diceIcon(16);
 
 document.getElementById('legBtn').addEventListener('click', ()=>setActiveDay('leg'));
 document.getElementById('upperBtn').addEventListener('click', ()=>setActiveDay('upper'));
@@ -637,17 +850,16 @@ function populateSelect(id, options){
 populateSelect('newMuscle', MUSCLE_OPTIONS);
 populateSelect('newCardioTarget', CARDIO_TARGET_OPTIONS);
 
-document.querySelector('#legBtn .tab-icon').innerHTML = silhouetteIcon(['legL','legR'], 20);
-document.querySelector('#upperBtn .tab-icon').innerHTML = silhouetteIcon(['head','torso','armL','armR'], 20);
-document.querySelector('#fullBtn .tab-icon').innerHTML = silhouetteIcon(['all'], 20);
 document.getElementById('customizeIcon').innerHTML = adjustIcon(16);
 document.getElementById('cardioSummaryIcon').innerHTML = pulseIconSmall(16);
 
 loadState();
+document.querySelectorAll('.g-btn').forEach(b => b.classList.toggle('active', b.dataset.g === currentGender));
 document.getElementById('probSlider').value = cardioProbability;
 document.getElementById('probOut').textContent = cardioProbability + '%';
 setActiveDay(currentDay);
 renderCardioChips();
+refreshAllIcons();
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {

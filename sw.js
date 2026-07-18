@@ -1,4 +1,4 @@
-const CACHE_NAME = "iron-reel-v3";
+const CACHE_NAME = "workout-randomizer-v1";
 const ASSETS = [
   "./index.html",
   "./manifest.json",

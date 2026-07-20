@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0C0708">
+<meta name="theme-color" content="#070B12">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Workout Randomizer">
@@ -16,16 +16,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg: #0C0708;
-  --surface: #1A0F10;
-  --surface-2: #241416;
-  --border: #3D2022;
-  --muted: #A8888A;
-  --white: #F5EDEE;
-  --accent: #C81E2C;
-  --accent-dim: #3B1013;
-  --accent-2: #E8543F;
-  --accent-2-dim: #3A1712;
+  --bg: #070B12;
+  --surface: #0F1A26;
+  --surface-2: #162433;
+  --border: #22364A;
+  --muted: #8A9BAC;
+  --white: #EDF2F5;
+  --accent: #1E6FD9;
+  --accent-dim: #0E2A45;
+  --accent-2: #2FB8C4;
+  --accent-2-dim: #0E2E33;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
 html,body{margin:0;padding:0;}
@@ -53,7 +53,7 @@ header{
 .header-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
 .gender-toggle{ display:flex; gap:4px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:4px; flex-shrink:0; }
 .g-btn{ width:34px; height:34px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; border-radius:7px; color:var(--muted); }
-.g-btn.active{ background: var(--accent); color:#170A0B; }
+.g-btn.active{ background: var(--accent); color:#050810; }
 .g-btn .g-icon{ display:flex; align-items:center; justify-content:center; height:20px; }
 .eyebrow{
   font-size:11px;
@@ -102,7 +102,7 @@ main{ padding: 20px; flex:1; }
 .segmented button .tab-icon{ display:flex; align-items:center; justify-content:center; height:20px; }
 .segmented button.active{
   background: var(--accent);
-  color:#170A0B;
+  color:#050810;
 }
 
 .status{
@@ -124,7 +124,7 @@ main{ padding: 20px; flex:1; }
   border:1px solid var(--border);
   border-radius:12px;
   padding:14px 10px;
-  min-height:108px;
+  min-height:120px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -149,6 +149,8 @@ main{ padding: 20px; flex:1; }
 }
 .reel .name{ font-size:13px; line-height:1.3; color:var(--white); font-weight:500; }
 .reel .muscle{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); opacity:0; transition:opacity .2s; }
+.reel .reps{ font-size:10px; color:var(--muted); opacity:0; transition:opacity .2s; }
+.reel.settled .reps{ opacity:0.85; }
 .reel.settled{ border-color: var(--accent); background: var(--accent-dim); }
 .reel.settled .muscle{ opacity:1; color:var(--accent); }
 .reel.cardio.settled{ border-color:var(--accent-2); background:var(--accent-2-dim); }
@@ -218,6 +220,16 @@ details[open] summary::after{ content:'–'; }
 input[type=range]{ flex:1; accent-color: var(--accent); }
 .sliderow .out{ font-size:13px; font-weight:600; color:var(--accent); min-width:36px; text-align:right; }
 
+.ghost-btn{ background:transparent; border:1px solid var(--border); color:var(--muted); border-radius:8px; padding:9px 16px; font-size:12px; font-family:'Inter',sans-serif; font-weight:600; width:100%; margin-bottom:16px; }
+.ghost-btn:active{ background: var(--surface-2); }
+.history-list{ margin:12px 0; display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; }
+.history-row{ border:1px solid var(--border); border-radius:8px; padding:8px 10px; background:var(--surface-2); }
+.history-top{ display:flex; justify-content:space-between; font-size:11px; margin-bottom:4px; }
+.history-label{ color: var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
+.history-time{ color:var(--muted); }
+.history-items{ font-size:12px; color:var(--white); line-height:1.4; }
+.history-empty{ font-size:12px; color:var(--muted); padding:8px 0; }
+
 .anything-section{ border-top:1px solid var(--border); padding-top:20px; margin-top:4px; text-align:center; }
 .anything-header{ display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:16px; }
 .anything-title{ font-family:'Oswald',sans-serif; font-size:15px; text-transform:uppercase; letter-spacing:0.04em; color: var(--white); }
@@ -244,7 +256,7 @@ input[type=range]{ flex:1; accent-color: var(--accent); }
 #spinBtn{
   width:100%;
   background: var(--accent);
-  color:#170A0B;
+  color:#050810;
   border:none;
   border-radius:12px;
   padding:16px;
@@ -286,6 +298,7 @@ input[type=range]{ flex:1; accent-color: var(--accent); }
     <p class="status" id="statusline">Choose a day, then spin.</p>
 
     <div class="reels" id="slots"></div>
+    <button id="shareDayBtn" class="ghost-btn" style="display:none;">Copy / Share Workout</button>
 
     <details id="customizeDetails">
       <summary><span class="summary-icon" id="customizeIcon"></span>Customize workouts</summary>
@@ -316,6 +329,12 @@ input[type=range]{ flex:1; accent-color: var(--accent); }
       </div>
     </details>
 
+    <details id="historyDetails">
+      <summary><span class="summary-icon" id="historyIcon"></span>Spin History</summary>
+      <div id="historyList" class="history-list"></div>
+      <button id="clearHistoryBtn" class="ghost-btn">Clear history</button>
+    </details>
+
     <div class="anything-section">
       <div class="anything-header">
         <span class="summary-icon" id="anythingIcon"></span>
@@ -331,6 +350,7 @@ input[type=range]{ flex:1; accent-color: var(--accent); }
       </div>
       <button id="anythingSpinBtn" class="secondary-btn">Spin the Wheel</button>
       <div id="anythingResult" class="anything-result"></div>
+      <button id="shareAnythingBtn" class="ghost-btn" style="display:none; margin-top:10px;">Copy / Share Pick</button>
     </div>
   </main>
 
@@ -479,6 +499,101 @@ function placeholderIcon(size){
   return getSilhouette([], size);
 }
 
+function repSuggestion(muscle){
+  if(muscle === 'Cardio') return '15–20 min';
+  return '3 × 10–12';
+}
+
+function clockIcon(size){
+  size = size || 16;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">'
+    + '<circle cx="12" cy="12" r="9" stroke-width="2"/>'
+    + '<path d="M12 7v5l3.5 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '</svg>';
+}
+
+function relativeTime(ts){
+  const diff = Date.now() - ts;
+  const min = Math.floor(diff / 60000);
+  if(min < 1) return 'Just now';
+  if(min < 60) return min + 'm ago';
+  const hr = Math.floor(min / 60);
+  if(hr < 24) return hr + 'h ago';
+  const day = Math.floor(hr / 24);
+  if(day < 7) return day + 'd ago';
+  return new Date(ts).toLocaleDateString();
+}
+
+function historyLabel(entry){
+  return entry.type === 'day' ? DAY_LABELS[entry.day] : 'Anything Goes';
+}
+
+function addHistoryEntry(entry){
+  entry.id = 'h' + Date.now() + Math.floor(Math.random() * 1000);
+  entry.ts = Date.now();
+  history.unshift(entry);
+  if(history.length > 10) history = history.slice(0, 10);
+  saveState();
+  renderHistory();
+}
+
+function renderHistory(){
+  const container = document.getElementById('historyList');
+  container.innerHTML = '';
+  if(history.length === 0){
+    container.innerHTML = '<div class="history-empty">No spins yet.</div>';
+    return;
+  }
+  history.forEach(entry => {
+    const row = document.createElement('div');
+    row.className = 'history-row';
+    const top = document.createElement('div');
+    top.className = 'history-top';
+    const label = document.createElement('span');
+    label.className = 'history-label';
+    label.textContent = historyLabel(entry);
+    const time = document.createElement('span');
+    time.className = 'history-time';
+    time.textContent = relativeTime(entry.ts);
+    top.appendChild(label);
+    top.appendChild(time);
+    const items = document.createElement('div');
+    items.className = 'history-items';
+    items.textContent = entry.items.map(it => it.name).join(', ');
+    row.appendChild(top);
+    row.appendChild(items);
+    container.appendChild(row);
+  });
+}
+
+function buildDayShareText(result){
+  const lines = result.items.map(it => '- ' + it.name + ' (' + it.muscle + ') ' + repSuggestion(it.muscle));
+  return 'Workout Randomizer — ' + DAY_LABELS[result.day] + '\n' + lines.join('\n');
+}
+
+function buildAnythingShareText(item){
+  return 'Workout Randomizer pick: ' + item.name + ' (' + item.muscle + ') ' + repSuggestion(item.muscle);
+}
+
+async function shareOrCopy(text, btnEl){
+  const originalLabel = btnEl.textContent;
+  if(navigator.share){
+    try{
+      await navigator.share({ title: 'Workout Randomizer', text });
+      return;
+    }catch(e){
+      // user cancelled the share sheet or it's unsupported here — fall through to copy
+    }
+  }
+  try{
+    await navigator.clipboard.writeText(text);
+    btnEl.textContent = 'Copied!';
+  }catch(e){
+    btnEl.textContent = 'Copy failed';
+  }
+  setTimeout(() => { btnEl.textContent = originalLabel; }, 1600);
+}
+
 function diceIcon(size){
   size = size || 16;
   return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">'
@@ -497,9 +612,9 @@ function adjustIcon(size){
     + '<line x1="4" y1="6" x2="20" y2="6" stroke-width="2" stroke-linecap="round"/>'
     + '<line x1="4" y1="12" x2="20" y2="12" stroke-width="2" stroke-linecap="round"/>'
     + '<line x1="4" y1="18" x2="20" y2="18" stroke-width="2" stroke-linecap="round"/>'
-    + '<circle cx="9" cy="6" r="2.4" fill="#0C0708" stroke-width="2"/>'
-    + '<circle cx="16" cy="12" r="2.4" fill="#0C0708" stroke-width="2"/>'
-    + '<circle cx="9" cy="18" r="2.4" fill="#0C0708" stroke-width="2"/>'
+    + '<circle cx="9" cy="6" r="2.4" fill="#070B12" stroke-width="2"/>'
+    + '<circle cx="16" cy="12" r="2.4" fill="#070B12" stroke-width="2"/>'
+    + '<circle cx="9" cy="18" r="2.4" fill="#070B12" stroke-width="2"/>'
     + '</svg>';
 }
 let cardioPool = [
@@ -517,6 +632,8 @@ let spinning = false;
 let wheelRotation = 0;
 let wheelSpinning = false;
 let lastAnythingItem = null;
+let lastDayResult = null;
+let history = [];
 
 const STORAGE_KEY = 'workout-randomizer-state-v2';
 
@@ -530,6 +647,7 @@ function loadState(){
     if(typeof saved.cardioProbability === 'number') cardioProbability = saved.cardioProbability;
     if(saved.currentDay) currentDay = saved.currentDay;
     if(saved.currentGender) currentGender = saved.currentGender;
+    if(Array.isArray(saved.history)) history = saved.history;
   }catch(e){
     console.error('Could not load saved state', e);
   }
@@ -537,7 +655,7 @@ function loadState(){
 
 function saveState(){
   try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ days, cardioPool, cardioProbability, currentDay, currentGender }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ days, cardioPool, cardioProbability, currentDay, currentGender, history }));
   }catch(e){
     console.error('Could not save state', e);
   }
@@ -622,6 +740,8 @@ function setActiveDay(day){
   document.getElementById('upperBtn').classList.toggle('active', day === 'upper');
   document.getElementById('fullBtn').classList.toggle('active', day === 'full');
   document.getElementById('statusline').textContent = DAY_LABELS[day] + ' selected. Spin to pick.';
+  document.getElementById('shareDayBtn').style.display = 'none';
+  lastDayResult = null;
   renderChips();
   renderPlaceholders();
   saveState();
@@ -644,9 +764,12 @@ function renderPlaceholders(){
     name.textContent = '?';
     const muscle = document.createElement('div');
     muscle.className = 'muscle';
+    const reps = document.createElement('div');
+    reps.className = 'reps';
     box.appendChild(icon);
     box.appendChild(name);
     box.appendChild(muscle);
+    box.appendChild(reps);
     container.appendChild(box);
   }
 }
@@ -668,9 +791,12 @@ function renderSlots(n, hasCardio){
     name.textContent = '?';
     const muscle = document.createElement('div');
     muscle.className = 'muscle';
+    const reps = document.createElement('div');
+    reps.className = 'reps';
     box.appendChild(icon);
     box.appendChild(name);
     box.appendChild(muscle);
+    box.appendChild(reps);
     container.appendChild(box);
   }
 }
@@ -685,6 +811,7 @@ function spin(){
   spinning = true;
   document.getElementById('spinBtn').setAttribute('disabled','');
   document.getElementById('statusline').textContent = 'Spinning...';
+  document.getElementById('shareDayBtn').style.display = 'none';
 
   const options = [4,5].filter(x => x <= pool.length);
   const n = options.length ? options[Math.floor(Math.random()*options.length)] : pool.length;
@@ -697,12 +824,14 @@ function spin(){
   renderSlots(n, hasCardio);
 
   let settledCount = 0;
+  const collectedPicks = [];
   for(let i=0;i<total;i++){
     const isCardioSlot = hasCardio && i === total-1;
     const reel = document.getElementById('reel-' + i);
     const iconEl = reel.querySelector('.icon');
     const nameEl = reel.querySelector('.name');
     const muscleEl = reel.querySelector('.muscle');
+    const repsEl = reel.querySelector('.reps');
     const spinDuration = 900 + i*350;
     const tickRate = 55;
     const sourcePool = isCardioSlot ? cardioPool : pool;
@@ -714,14 +843,19 @@ function spin(){
       const finalItem = isCardioSlot ? cardioPick : final[i];
       nameEl.textContent = finalItem.name;
       muscleEl.textContent = finalItem.muscle;
+      repsEl.textContent = repSuggestion(finalItem.muscle);
       reel.dataset.muscle = finalItem.muscle;
       iconEl.innerHTML = iconForMuscle(finalItem.muscle, 24);
       reel.classList.add('settled');
+      collectedPicks.push(finalItem);
       settledCount++;
       if(settledCount === total){
         spinning = false;
         document.getElementById('spinBtn').removeAttribute('disabled');
         document.getElementById('statusline').textContent = total + ' slots picked for ' + DAY_LABELS[currentDay].toLowerCase() + (hasCardio ? ' plus a bonus cardio slot' : '') + '.';
+        lastDayResult = { day: currentDay, items: collectedPicks };
+        document.getElementById('shareDayBtn').style.display = 'inline-flex';
+        addHistoryEntry({ type:'day', day: currentDay, items: collectedPicks });
       }
     }, spinDuration);
   }
@@ -752,6 +886,7 @@ function spinAnything(){
   }
   wheelSpinning = true;
   document.getElementById('anythingSpinBtn').setAttribute('disabled','');
+  document.getElementById('shareAnythingBtn').style.display = 'none';
   resultEl.innerHTML = '';
 
   const n = allItems.length;
@@ -782,16 +917,38 @@ function spinAnything(){
     const muscle = document.createElement('div');
     muscle.className = 'muscle';
     muscle.textContent = item.muscle + ' · ' + item.source;
+    const reps = document.createElement('div');
+    reps.className = 'reps';
+    reps.style.opacity = '0.85';
+    reps.textContent = repSuggestion(item.muscle);
     resultEl.appendChild(icon);
     resultEl.appendChild(name);
     resultEl.appendChild(muscle);
+    resultEl.appendChild(reps);
     wheelSpinning = false;
     document.getElementById('anythingSpinBtn').removeAttribute('disabled');
+    document.getElementById('shareAnythingBtn').style.display = 'inline-flex';
+    addHistoryEntry({ type:'wheel', items:[item] });
   }, 3500);
 }
 
 document.getElementById('anythingSpinBtn').addEventListener('click', spinAnything);
 document.getElementById('anythingIcon').innerHTML = diceIcon(16);
+document.getElementById('historyIcon').innerHTML = clockIcon(16);
+
+document.getElementById('shareDayBtn').addEventListener('click', () => {
+  if(!lastDayResult) return;
+  shareOrCopy(buildDayShareText(lastDayResult), document.getElementById('shareDayBtn'));
+});
+document.getElementById('shareAnythingBtn').addEventListener('click', () => {
+  if(!lastAnythingItem) return;
+  shareOrCopy(buildAnythingShareText(lastAnythingItem), document.getElementById('shareAnythingBtn'));
+});
+document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+  history = [];
+  saveState();
+  renderHistory();
+});
 
 document.getElementById('legBtn').addEventListener('click', ()=>setActiveDay('leg'));
 document.getElementById('upperBtn').addEventListener('click', ()=>setActiveDay('upper'));
@@ -859,6 +1016,7 @@ document.getElementById('probSlider').value = cardioProbability;
 document.getElementById('probOut').textContent = cardioProbability + '%';
 setActiveDay(currentDay);
 renderCardioChips();
+renderHistory();
 refreshAllIcons();
 
 if('serviceWorker' in navigator){

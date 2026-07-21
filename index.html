@@ -473,6 +473,148 @@ function getSilhouette(emphasis, size){
   return currentGender === 'female' ? femaleSilhouette(emphasis, size) : maleSilhouette(emphasis, size);
 }
 
+// --- Anatomical muscle overlay system: a dim full-body base plus a
+// specifically-shaped highlight for the exact targeted muscle, like a
+// real muscle diagram rather than a whole limb lighting up. ---
+
+function maleFigureBase(opacity){
+  const t = 'stroke="rgba(0,0,0,0.35)" fill="none" stroke-width="1"';
+  return '<circle cx="20" cy="7" r="5.5" opacity="'+opacity+'"/>'
+    + '<rect x="17.5" y="10.5" width="5" height="3.5" opacity="'+opacity+'"/>'
+    + '<rect x="8" y="14" width="24" height="4" rx="2" opacity="'+opacity+'"/>'
+    + '<rect x="11" y="17" width="18" height="9" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="13" y="25" width="14" height="9" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="12" y="33" width="16" height="5" rx="2" opacity="'+opacity+'"/>'
+    + '<line x1="20" y1="17" x2="20" y2="25" '+t+'/>'
+    + '<rect x="3" y="16" width="7" height="11" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="4" y="27" width="5" height="11" rx="2.5" opacity="'+opacity+'"/>'
+    + '<rect x="30" y="16" width="7" height="11" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="31" y="27" width="5" height="11" rx="2.5" opacity="'+opacity+'"/>'
+    + '<rect x="12" y="38" width="8" height="13" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="13" y="51" width="6" height="13" rx="2.5" opacity="'+opacity+'"/>'
+    + '<rect x="20" y="38" width="8" height="13" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="21" y="51" width="6" height="13" rx="2.5" opacity="'+opacity+'"/>';
+}
+
+function maleMuscleOverlay(muscle){
+  switch(muscle){
+    case 'Chest':
+      return '<path d="M12,17 Q15.5,15 19,17 Q20.2,21 19,25.5 Q15.5,27.5 12,25.5 Q10.8,21 12,17 Z"/>'
+           + '<path d="M28,17 Q24.5,15 21,17 Q19.8,21 21,25.5 Q24.5,27.5 28,25.5 Q29.2,21 28,17 Z"/>';
+    case 'Shoulders':
+      return '<ellipse cx="7" cy="17" rx="4.3" ry="4.6"/><ellipse cx="33" cy="17" rx="4.3" ry="4.6"/>';
+    case 'Rear Delts':
+      return '<ellipse cx="5.2" cy="18" rx="3" ry="4.6"/><ellipse cx="34.8" cy="18" rx="3" ry="4.6"/>';
+    case 'Biceps':
+      return '<path d="M3.5,19 Q2,23 3.5,27.5 Q5.8,28.6 8,27.3 Q9,23 8,18.8 Q5.8,17.2 3.5,19 Z"/>'
+           + '<path d="M36.5,19 Q38,23 36.5,27.5 Q34.2,28.6 32,27.3 Q31,23 32,18.8 Q34.2,17.2 36.5,19 Z"/>';
+    case 'Triceps':
+      return '<path d="M2.6,20 Q1.7,23.5 2.6,26.8 L4.6,26.5 Q3.9,23.5 4.6,20.3 Z"/>'
+           + '<path d="M37.4,20 Q38.3,23.5 37.4,26.8 L35.4,26.5 Q36.1,23.5 35.4,20.3 Z"/>';
+    case 'Forearms':
+      return '<ellipse cx="6.3" cy="32" rx="2.7" ry="6.2"/><ellipse cx="33.7" cy="32" rx="2.7" ry="6.2"/>';
+    case 'Core':
+      return [0,1,2].map(r => [0,1].map(c => '<rect x="'+(c===0?14.7:20.3)+'" y="'+(26.8+r*3.5)+'" width="5" height="2.9" rx="1.1"/>').join('')).join('');
+    case 'Back':
+      return '<path d="M10,18 Q6,24 8.6,32.5 Q10.8,28 12,24 Q11.2,20.5 10,18 Z"/>'
+           + '<path d="M30,18 Q34,24 31.4,32.5 Q29.2,28 28,24 Q28.8,20.5 30,18 Z"/>';
+    case 'Quads':
+      return '<path d="M13,40 Q11.2,46 12.6,50.5 Q15,51.6 16.8,50.3 Q18,46 16.8,40 Q15,38.2 13,40 Z"/>'
+           + '<path d="M27,40 Q28.8,46 27.4,50.5 Q25,51.6 23.2,50.3 Q22,46 23.2,40 Q25,38.2 27,40 Z"/>';
+    case 'Hamstrings':
+      return '<path d="M12,41 Q10.8,46 12,49.5 L14.2,49.2 Q13.3,45.8 14,41.2 Z"/>'
+           + '<path d="M28,41 Q29.2,46 28,49.5 L25.8,49.2 Q26.7,45.8 26,41.2 Z"/>';
+    case 'Calves':
+      return '<path d="M13,54 Q11.2,58 12.8,62.2 Q15,63.4 16.6,62 Q17.6,58 16.4,54 Q14.6,52.3 13,54 Z"/>'
+           + '<path d="M27,54 Q28.8,58 27.2,62.2 Q25,63.4 23.4,62 Q22.4,58 23.6,54 Q25.4,52.3 27,54 Z"/>';
+    case 'Glutes':
+      return '<ellipse cx="15" cy="35.5" rx="4.2" ry="3"/><ellipse cx="25" cy="35.5" rx="4.2" ry="3"/>';
+    default:
+      return '';
+  }
+}
+
+function femaleFigureBase(opacity){
+  const t = 'stroke="rgba(0,0,0,0.35)" fill="none" stroke-width="1"';
+  return '<ellipse cx="25.5" cy="9" rx="2.6" ry="4.5" opacity="'+opacity+'"/>'
+    + '<circle cx="20" cy="7" r="5.2" opacity="'+opacity+'"/>'
+    + '<rect x="17.7" y="10.2" width="4.6" height="3.3" opacity="'+opacity+'"/>'
+    + '<rect x="9" y="14" width="22" height="3.4" rx="1.7" opacity="'+opacity+'"/>'
+    + '<rect x="12" y="17.4" width="16" height="7.6" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="14.5" y="24.5" width="11" height="7" rx="3.5" opacity="'+opacity+'"/>'
+    + '<rect x="11.5" y="31" width="17" height="6" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="4.5" y="16" width="5.5" height="10" rx="2.75" opacity="'+opacity+'"/>'
+    + '<rect x="5" y="26" width="4" height="11" rx="2" opacity="'+opacity+'"/>'
+    + '<rect x="30" y="16" width="5.5" height="10" rx="2.75" opacity="'+opacity+'"/>'
+    + '<rect x="31" y="26" width="4" height="11" rx="2" opacity="'+opacity+'"/>'
+    + '<rect x="13" y="37" width="7" height="14" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="14" y="51" width="5" height="13" rx="2.5" opacity="'+opacity+'"/>'
+    + '<rect x="20" y="37" width="7" height="14" rx="3" opacity="'+opacity+'"/>'
+    + '<rect x="21" y="51" width="5" height="13" rx="2.5" opacity="'+opacity+'"/>';
+}
+
+function femaleMuscleOverlay(muscle){
+  switch(muscle){
+    case 'Chest':
+      return '<path d="M12,17.5 Q15.5,15.8 19,17.5 Q20,20.8 19,24.3 Q15.5,26 12,24.3 Q11,20.8 12,17.5 Z"/>'
+           + '<path d="M28,17.5 Q24.5,15.8 21,17.5 Q20,20.8 21,24.3 Q24.5,26 28,24.3 Q29,20.8 28,17.5 Z"/>';
+    case 'Shoulders':
+      return '<ellipse cx="9" cy="16.5" rx="3.4" ry="3.6"/><ellipse cx="31" cy="16.5" rx="3.4" ry="3.6"/>';
+    case 'Rear Delts':
+      return '<ellipse cx="7.8" cy="17" rx="2.4" ry="3.6"/><ellipse cx="32.2" cy="17" rx="2.4" ry="3.6"/>';
+    case 'Biceps':
+      return '<path d="M5,17 Q3.8,21 5,25 Q6.9,25.9 8.5,24.8 Q9.3,21 8.5,17.3 Q6.9,16 5,17 Z"/>'
+           + '<path d="M35,17 Q36.2,21 35,25 Q33.1,25.9 31.5,24.8 Q30.7,21 31.5,17.3 Q33.1,16 35,17 Z"/>';
+    case 'Triceps':
+      return '<path d="M4.2,17.5 Q3.4,21 4.2,24.5 L5.8,24.2 Q5.2,21 5.8,17.8 Z"/>'
+           + '<path d="M35.8,17.5 Q36.6,21 35.8,24.5 L34.2,24.2 Q34.8,21 34.2,17.8 Z"/>';
+    case 'Forearms':
+      return '<ellipse cx="6.6" cy="31" rx="2.1" ry="5.6"/><ellipse cx="33.4" cy="31" rx="2.1" ry="5.6"/>';
+    case 'Core':
+      return [0,1,2].map(r => [0,1].map(c => '<rect x="'+(c===0?15.3:20.7)+'" y="'+(25+r*3.2)+'" width="4" height="2.6" rx="1"/>').join('')).join('');
+    case 'Back':
+      return '<path d="M10.5,17.5 Q7.5,23 9.7,29.5 Q11.5,25.5 12.5,22 Q11.7,19.5 10.5,17.5 Z"/>'
+           + '<path d="M29.5,17.5 Q32.5,23 30.3,29.5 Q28.5,25.5 27.5,22 Q28.3,19.5 29.5,17.5 Z"/>';
+    case 'Quads':
+      return '<path d="M13.8,37.5 Q12.2,43 13.5,47.5 Q15.5,48.5 17,47.3 Q18,43 17,37.5 Q15.4,36 13.8,37.5 Z"/>'
+           + '<path d="M26.2,37.5 Q27.8,43 26.5,47.5 Q24.5,48.5 23,47.3 Q22,43 23,37.5 Q24.6,36 26.2,37.5 Z"/>';
+    case 'Hamstrings':
+      return '<path d="M13.2,38 Q12.2,43 13.2,46.5 L15,46.2 Q14.2,42.8 14.8,38.2 Z"/>'
+           + '<path d="M26.8,38 Q27.8,43 26.8,46.5 L25,46.2 Q25.8,42.8 25.2,38.2 Z"/>';
+    case 'Calves':
+      return '<path d="M14,51.5 Q12.4,55.5 13.8,59.8 Q15.5,60.8 16.8,59.6 Q17.7,55.5 16.6,51.5 Q15.1,50 14,51.5 Z"/>'
+           + '<path d="M26,51.5 Q27.6,55.5 26.2,59.8 Q24.5,60.8 23.2,59.6 Q22.3,55.5 23.4,51.5 Q24.9,50 26,51.5 Z"/>';
+    case 'Glutes':
+      return '<ellipse cx="15.5" cy="34" rx="3.6" ry="2.6"/><ellipse cx="24.5" cy="34" rx="3.6" ry="2.6"/>';
+    default:
+      return '';
+  }
+}
+
+function maleMuscleIcon(muscle, size){
+  size = size || 22;
+  const h = Math.round(size * 1.6);
+  const full = muscle === 'Full Body';
+  const baseOp = full ? '1' : '0.3';
+  const overlay = (muscle && !full) ? maleMuscleOverlay(muscle) : '';
+  return '<svg width="'+size+'" height="'+h+'" viewBox="0 0 40 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">'
+    + maleFigureBase(baseOp) + overlay + '</svg>';
+}
+
+function femaleMuscleIcon(muscle, size){
+  size = size || 22;
+  const h = Math.round(size * 1.6);
+  const full = muscle === 'Full Body';
+  const baseOp = full ? '1' : '0.3';
+  const overlay = (muscle && !full) ? femaleMuscleOverlay(muscle) : '';
+  return '<svg width="'+size+'" height="'+h+'" viewBox="0 0 40 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">'
+    + femaleFigureBase(baseOp) + overlay + '</svg>';
+}
+
+function getMuscleIcon(muscle, size){
+  return currentGender === 'female' ? femaleMuscleIcon(muscle, size) : maleMuscleIcon(muscle, size);
+}
+
 function cardioPulseIcon(size){
   size = size || 22;
   const h = Math.round(size * 1.55);
@@ -489,14 +631,13 @@ function pulseIconSmall(size){
 }
 
 function iconForMuscle(muscle, size){
-  if(!muscle) return getSilhouette([], size);
+  if(!muscle) return getMuscleIcon('', size);
   if(muscle === 'Cardio') return cardioPulseIcon(size);
-  if(muscle === 'Full Body') return getSilhouette(['all'], size);
-  return getSilhouette(MUSCLE_PARTS[muscle] || [], size);
+  return getMuscleIcon(muscle, size);
 }
 
 function placeholderIcon(size){
-  return getSilhouette([], size);
+  return getMuscleIcon('', size);
 }
 
 function repSuggestion(muscle){
